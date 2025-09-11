@@ -1,41 +1,38 @@
 # 🌿 Plant Diary Card for Home Assistant
 
-**Plant Diary** is a custom integration and Lovelace card for [Home Assistant](https://www.home-assistant.io/) that helps you manage and monitor your houseplants. Track when each plant was last watered or fertilized, define care intervals, and visualize everything with a custom card.
+**Plant Diary Card** is a Lovelace card for [Home Assistant](https://www.home-assistant.io/) that helps you manage and monitor your houseplants. This card is used in combination with the [Plant Diary Integration](https://github.com/xplanes/ha-plant-diary).
 
 This work has been inspired by [Plant tracker for Home Assistant](https://github.com/mountwebs/ha-plant-tracker).
 
-## Features
+# Features
 
-- **Companion Lovelace Card**
-  - Shows days since last watering and fertilizing
-  - Supports customizable images for each plant
-  - Shows each plant’s watering status with intuitive color codes:
-    - 🔵 Blue: watered today
-    - 🟢 Green: within watering interval
-    - 🔴 Red: past watering interval
-    - 🟠 Orange: within postponed watering interval
-  - Option to show only plants that currently need watering
-  - Quick access to edit plant details via popup dialog
+- Shows days since last watering and fertilizing
+- Supports customizable images for each plant
+- Shows each plant’s watering status with intuitive color codes:
+  - 🔵 Blue: watered today
+  - 🟢 Green: within watering interval
+  - 🔴 Red: past watering interval
+  - 🟠 Orange: within postponed watering interval
+- Option to show only plants that currently need watering
+- Quick access to edit plant details via popup dialog
 
-# 🖥️ Lovelace Card
+# Preview
 
-Visualize your plants and their watering status using a custom Lovelace card.
-
-## Preview
-
-### Plant Diary Card
+## Plant Diary Card
 
 ![Plant Diary Card](docs/plant-diary-card.png)
 
 _Overview of multiple plants and their watering status._
 
-### Edit Plant Popup
+## Edit Plant Popup
 
 ![Edit Plant](docs/edit-popup.png)
 
 _Popup dialog for editing plant details such as watering schedule and last watered date._
 
-## Installation
+# Installation
+
+## Manual Installation
 
 1. Download the `ha-plant-diary-card.js` file and place it in your `config/www/plant_diary` directory: config/www//plant_diary/ha-plant-diary-card.js
 2. Add the resource to your dashboard via **Settings > Dashboards > Resources**:
@@ -51,7 +48,7 @@ URL: /local/plant_diary/ha-plant-diary-card.js
 type: custom:ha-plant-diary-card
 ```
 
-## Adding Plant Images
+# Adding Plant Images
 
 You can add custom images for your plants to enhance the Lovelace card and UI experience.
 
@@ -78,7 +75,7 @@ Planned features and improvements for future versions:
 
 Feel free to contribute to the roadmap or suggest new ideas!
 
-## 📄 License
+# 📄 License
 
 This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for full license text.
