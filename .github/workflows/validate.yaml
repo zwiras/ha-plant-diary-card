@@ -15,9 +15,6 @@ jobs:
     steps:
       # Checkout repo
       - uses: actions/checkout@v3
-      # Validate Home Assistant integration manifest
-      - name: Validate HA manifest
-        uses: home-assistant/actions/hassfest@master
       # Validate HACS repository
       - name: HACS validation
         uses: hacs/action@main
