@@ -1,5 +1,6 @@
 {
   "name": "Plant Diary Card",
   "render_readme": true,
-  "filename": "dist/ha-plant-diary-card.js"
+  "content_in_root": true,
+  "filename": "ha-plant-diary-card.js"
 }
