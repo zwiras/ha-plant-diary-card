@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Deploy plant-diary-card",
+      "type": "shell",
+      "command": "sh",
+      "args": [
+        "-c",
+        "mkdir -p /workspaces/core/config/www/plant_diary && cp -r /workspaces/ha-plant-diary/www/plant_diary /workspaces/core/config/www"],
+      "group": "build",
+      "detail": "Deploy plant-diary-card to core configuration",
+    }
+  ]
+}
