@@ -28,7 +28,7 @@ _Overview of multiple plants and their watering status._
 ## Edit Plant Popup
 
 ![Edit Plant - Dark Mode](docs/edit_dark_mode.png)
-![Edit Plant - Light Mode](docs/edit-light-mode.png)
+![Edit Plant - Light Mode](docs/edit_light_mode.png)
 
 _Popup dialog for editing plant details such as watering schedule and last watered date._
 
