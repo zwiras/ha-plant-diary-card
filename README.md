@@ -12,7 +12,7 @@ This work has been inspired by [Plant tracker for Home Assistant](https://github
   - 🔵 Blue: watered today
   - 🟢 Green: within watering interval
   - 🔴 Red: past watering interval
-  - 🟠 Orange: within postponed watering interval
+  - 🟡 Yellow: within postponed watering interval
 - Option to show only plants that currently need watering
 - Quick access to edit plant details via popup dialog
 
@@ -20,13 +20,15 @@ This work has been inspired by [Plant tracker for Home Assistant](https://github
 
 ## Plant Diary Card
 
-![Plant Diary Card](docs/plant-diary-card.png)
+![Plant Diary Card - Dark Mode](docs/main_card_dark_mode.png)
+![Plant Diary Card - Light Mode](docs/main_card_light_mode.png)
 
 _Overview of multiple plants and their watering status._
 
 ## Edit Plant Popup
 
-![Edit Plant](docs/edit-popup.png)
+![Edit Plant - Dark Mode](docs/edit_dark_mode.png)
+![Edit Plant - Light Mode](docs/edit-light-mode.png)
 
 _Popup dialog for editing plant details such as watering schedule and last watered date._
 
