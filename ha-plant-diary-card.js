@@ -221,7 +221,9 @@ class PlantDiaryCard extends HTMLElement {
             }
 
             const plantId = this._hass.states[entityId]?.attributes?.plant_name;
-
+            const insideSwitchModal = this.modalEditPlantBody.querySelector('#inside');
+            const insideValueModal = insideSwitchModal.checked;
+            
             // Call the service to update the attributes
             this._hass.callService('plant_diary', 'update_plant', {
                 plant_id: plantId,
@@ -230,7 +232,7 @@ class PlantDiaryCard extends HTMLElement {
                 last_fertilized: form.last_fertilized.value,
                 watering_interval: form.watering_days.value,
                 watering_postponed: form.watering_postponed.value,
-                inside: form.inside.checked
+                inside: insideValueModal
             });
 
             // Close the modal
@@ -252,13 +254,13 @@ class PlantDiaryCard extends HTMLElement {
     getBackgroundColor(state) {
         switch (state) {
             case '3':
-                return 'rgba(30,144,255,0.25)'; // DodgerBlue
+                return 'rgba(179, 205, 224, 0.3)'; // pastel blue
             case '2':
-                return 'rgba(0, 128, 0, 0.25)'; // Green
+                return 'rgba(198, 239, 206, 0.3)'; // pastel green
             case '1':
-                return 'rgba(255,165,0,0.25)'; // Orange
+                return 'rgba(255, 229, 180, 0.3)'; // pastel yellow
             case '0':
-                return 'rgba(255, 0, 0,0.25)'; // Red
+                return 'rgba(255, 204, 204, 0.3)'; // pastel red
             default:
                 return 'rgba(0, 0, 0, 0.25)'; // Default
         }
@@ -402,20 +404,23 @@ class PlantDiaryCard extends HTMLElement {
                 </div>
                 <div class="modal-attribute">
                     <label for="inside">Inside:</label>
-                    <input type="checkbox" id="inside" name="inside" ${isInside}></input>
+                    <ha-switch
+                        id="inside"
+                        name="inside"
+                        ${isInside}
+                    ></ha-switch>
                 </div>
             </form>
             `
         content += `
             <div class="modal-buttons">
-                <ha-button id="cancel_button">Cancel</ha-button>
-                `
+            `
         if (entityId !== "") {
             content += `
                 <ha-icon icon="mdi:delete" class="deletePlantButton" title="Delete planta"></ha-icon>`;
         }
-
-        content += `
+         content += `
+                <ha-button id="cancel_button">Cancel</ha-button>
                 <ha-button id="ok_button">OK</ha-button>
             </div>
         </div>`
@@ -474,276 +479,311 @@ class PlantDiaryCard extends HTMLElement {
     getStyles() {
         return `
           <style>
-            ha-card {
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-            }
-            .card-actions {
-                display: flex;
-                justify-content: flex-end;
-                margin: 4px;
-                margin-bottom: 12px;
-            }
-            .filter-toggle {
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-                gap: 10px;
-                margin: 0 10px 10px 10px;
-            }
-            .card-content {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-            }
-            .plant-diary-entity {
-                display: grid;
-                grid-template-areas:
-                    "i n delete_btn"
-                    "i last_watered last_watered"
-                    "i last_fertilized last_fertilized"
-                    "i due due"
-                    "i watering_postponed watering_postponed"
-                    "i . .";
-                grid-template-columns: min-content 4fr auto;
-                grid-template-rows:
-                    1fr
-                    min-content
-                    min-content
-                    min-content
-                    min-content
-                    1fr;
-                border-radius: 8px;
-                padding: 5px;
-                margin-bottom: 16px;
-                width: 100%;
-                height: 140px;
-                box-sizing: border-box;
-                cursor: pointer;
-            }
-            .plant-diary-entity .plant-image-container {
-                grid-area: i;
-                display: flex;
-                align-items: center;        /* vertical */
-                justify-content: center;    /* optional: horizontal */
-                max-width: 100px;
-				min-width: 100px;
-                height: 100%;               /* let it take up the full grid row height */
-                border-radius: 8px;
-                margin: 0px 0px;
-            }
-            .plant-diary-entity .plant-image {
-                max-height: 100px;          /* Set a max height */
-                max-width: 100%;            /* Prevent overflow */
-                height: auto;               /* Maintain aspect ratio */
-                width: auto;                /* Let the image scale naturally */
-                margin: 0px;               /* Center within flex container */
-                display: block;
-                border-radius: 8px;
-            }
-            .plant-diary-entity .name {
-                grid-area: n;
-                font-size: 120%;
-                margin: 0px 0px 5px 10px;
-                justify-self: start;
-            }
-            .plant-diary-entity .last_watered,
-            .plant-diary-entity .due,
-            .plant-diary-entity .watering_postponed,
-            .plant-diary-entity .last_fertilized {
-                font-size: 90%;
-                margin: 0px 0px 0px 10px;
-                line-height: 1.2;
-            }
-            .plant-diary-entity .last_watered {
-                grid-area: last_watered;
-            }
-            .plant-diary-entity .due {
-                grid-area: due;
-            }
-            .plant-diary-entity .watering_postponed {
-                grid-area: watering_postponed;
-            }
-            .plant-diary-entity .last_fertilized {
-                grid-area: last_fertilized;
-            }
+    ha-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        font-family: "Roboto", "Arial", sans-serif;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        padding: 10px;
+    }
 
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0,0,0,0.4);
-                padding-top: 60px;
-            }
-            .modal-content {
-                background-color: rgb(0,0,0);
-                margin: 5% auto;
-                padding: 10px;
-                border: 1px solid #888;
-                width: 90%;
-                max-width: 350px;
-                max-height: 90vh;
-                box-sizing: border-box;
-                overflow-x: auto;
-                overflow-y: auto;
-                display: flex;
-                flex-direction: column;
-            }
-            .modal-header {
-                position: relative;
-                text-align: center;
-                margin-bottom: 10px;
-            }
-            .modal-title {
-                font-size: 140%;
-                font-weight: bold;
-                margin: 0;
-                color: var(--primary-text-color, #fff);
-            }
-            .close {
-                position: absolute;
-                top: 50%;
-                right: 0;
-                transform: translateY(-50%);
-                font-size: 28px;
-                font-weight: bold;
-                color: #aaa;
-                cursor: pointer;
-                line-height: 1;
-                padding: 0;
-            }
-            .modal-buttons {
-                margin-top: 10px;
-                display: flex;
-                justify-content: space-between;
-            }
-            .deletePlantButton {
-                grid-area: delete_btn;
-                justify-self: end;
-                cursor: pointer;
-                color: rgba(255, 1, 1, 0.5);
-                --mdc-icon-size: 30px;
-            }
-            .deletePlantButton:hover {
-                color: red;
-                transform: scale(1.2);
-            }
-            .modal-attribute {
-                display: flex;
-                align-items: center; /* Aligns all children vertically centered */
-                gap: 0px; /* Optional: adds space between elements */
-                margin: 5px 0;
-                min-height: 30px;
-            }
-            .modal-attribute label {
-                width: 130px;
-                text-align: left;
-            }
-            .modal-attribute input {
-                width: 50px;
-            }
-            .modal-attribute input[type="text"],
-            .modal-attribute input[type="number"],
-            .modal-attribute input[type="date"],
-            .modal-attribute select {
-                flex: 1;
-                text-align: right;
-                width: 50px;
-            }
-            .modal-attribute input[type="checkbox"] {
-                margin-left: auto;
-            }
-            .modal-attribute button {
-                background: none;
-                border: none;
-                cursor: pointer;
-            }
-            .modal-attribute ha-icon {
-                --mdc-icon-size: 36px;
-                color: var(--primary-color);
-            }
-            .fallback-icon {
-                font-size: 64px;
-                --mdc-icon-size: 64px;
-                color: #888;
-            }
-            .error-message {
-                color: red;
-                font-weight: bold;
-                display: none;
-                margin-bottom: 10px;
-                text-align: center;
-            }
+    .card-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 12px;
+    }
 
-            .plant-diary-entity-modal-content {
-                grid-area: content;
-                display: grid;
-                grid-template-areas:
-                    "i"
-                    "plant_name"
-                    "last_watered"
-                    "watering_days"
-                    "watering_postponed"
-                    "last_fertilized"
-                    "inside";
-                grid-template-columns: 1fr;
-                grid-template-rows:
-                    min-content
-                    min-content
-                    min-content
-                    min-content
-                    min-content
-                    min-content
-                    min-content;
-                padding: 0px;
-                width: 100%;
-                height: 100%;
-                box-sizing: border-box;
-                flex-grow: 2;
-            }
-            .plant-diary-entity-modal-content .plant-image-container {
-                grid-area: i;
-                max-width: 200px;
-                max-height: 200px;
-                border-radius: 8px;
-                margin-top: 10px;
-                justify-self: center;
-            }
-            .plant-diary-entity-modal-content .plant-image {
-                width: 100%;
-                height: 100%;
-                display: block;
-                border-radius: 8px;
-            }
-            .plant-diary-entity-modal-content .editForm {
-                padding: 10px 10px 0px 10px;
-            }
-            .plant-diary-entity-modal-content .plant_name {
-                grid-area: plant_name;
-            }
-            .plant-diary-entity-modal-content .last_watered {
-                grid-area: last_watered;
-            }
-            .plant-diary-entity-modal-content .watering_days {
-                grid-area: watering_days;
-            }
-            .plant-diary-entity-modal-content .watering_postponed {
-                grid-area: watering_postponed;
-            }
-            .plant-diary-entity-modal-content .last_fertilized {
-                grid-area: last_fertilized;
-            }
-            .plant-diary-entity-modal-content .inside {
-                grid-area: inside;
-                justify-self: center;
-            }
-          </style>`;
+    .card-actions ha-button {
+        background: transparent;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: all 0.2s ease-in-out;
+        color: var(--primary-text-color);
+    }
+    .card-actions ha-button:hover {
+        background: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .filter-toggle {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin: 0 10px 10px 10px;
+        font-size: 0.95rem;
+        color: var(--primary-text-color);
+    }
+
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .plant-diary-entity {
+        display: grid;
+        grid-template-areas:
+            "i n delete_btn"
+            "i last_fertilized last_watered"
+            "i watering_postponed due"
+            "i . .";
+        grid-template-columns: 100px 1fr auto;
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 14px;
+        background-color: rgba(255,255,255,0.08);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .plant-diary-entity .last_fertilized {
+        grid-area: last_fertilized;
+    }
+    .plant-diary-entity .last_watered {
+        grid-area: last_watered;
+    }
+    .plant-diary-entity .watering_postponed {
+        grid-area: watering_postponed;
+    }
+    .plant-diary-entity .due {
+        grid-area: due;
+    }
+    
+    .plant-diary-entity:hover {
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
+    }
+
+    .plant-diary-entity .plant-image-container {
+        grid-area: i;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .plant-diary-entity .plant-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .plant-diary-entity .name {
+        grid-area: n;
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-left: 10px;
+        color: var(--primary-text-color);
+    }
+
+    .plant-diary-entity p {
+        font-size: 0.85rem;
+        margin: 2px 0 2px 10px;
+        color: var(--secondary-text-color);
+    }
+
+    .deletePlantButton {
+        grid-area: delete_btn;
+        justify-self: end;
+        color: rgba(255, 50, 50, 0.7);
+        transition: transform 0.2s ease, color 0.2s ease;
+        cursor: pointer;
+    }
+    .deletePlantButton:hover {
+        color: red;
+        transform: scale(1.2);
+    }
+
+    /* Modal overlay */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        padding-top: 60px;
+        background-color: rgba(0,0,0,0.6);
+        backdrop-filter: blur(4px);
+    }
+
+    /* Modal content */
+    .modal-content {
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 14px;
+        width: 90%;
+        max-width: 400px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        background-color: var(--primary-background-color, #fefefe);
+        color: var(--primary-text-color, #111);
+    }
+
+    .modal-header {
+        position: relative;
+        text-align: center;
+    }
+    .modal-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+    }
+    .close {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .plant-diary-entity-modal-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .plant-diary-entity-modal-content .plant-image-container {
+        max-width: 180px;
+        max-height: 180px;
+        margin: 0 auto 10px auto;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .plant-diary-entity-modal-content .plant-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .modal-attribute {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 5px 0;
+    }
+
+    .modal-attribute label {
+        width: 120px;
+        font-weight: 500;
+        margin-right: 8px;
+    }
+
+    .modal-attribute input,
+    .modal-attribute select {
+        flex: 1;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--divider-color, #ccc);
+        font-size: 0.9rem;
+        background-color: var(--secondary-background-color, #fff);
+        color: var(--primary-text-color, #111);
+    }
+
+    .modal-attribute button {
+        background-color: #e8e8e8;
+        border: none;
+        border-radius: 6px;
+        padding: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .modal-attribute button:hover {
+        background-color: var(--secondary-background-color, #fff);
+        transform: translateY(-1px);
+    }
+
+    /* Button OK / Cancel / Delete */
+    .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 1px;
+    }
+    .modal-buttons ha-button {
+        min-width: 100px; 
+        border: none;          
+        outline: none;          
+        border-radius: 8px;     
+        padding: 6px 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background-color: transparent;  
+        color: var(--primary-text-color, #111);                 
+    }
+
+    .modal-buttons ha-button:hover {
+        transform: translateY(-1px);
+    }
+
+
+    /* Delete icon */
+    .deletePlantButton {
+        cursor: pointer;
+        color: rgba(255, 50, 50, 0.7);
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .deletePlantButton:hover {
+        color: red;
+        transform: scale(1.2);
+    }
+
+    .error-message {
+        color: #c00;
+        font-weight: 600;
+        text-align: center;
+        display: none;
+    }
+
+    /* --- DARK MODE --- */
+    body.dark-mode, ha-card.dark-mode, .modal-content.dark-mode {
+        background-color: #2b2b2b;
+        color: #f5f5f5;
+    }
+
+    body.dark-mode .modal-attribute input,
+    body.dark-mode .modal-attribute select {
+        background-color: #3b3b3b;
+        color: #f5f5f5;
+        border: 1px solid #555;
+    }
+
+    body.dark-mode .modal-attribute button,
+    body.dark-mode .modal-buttons ha-button {
+        background-color: #444;
+        color: #f5f5f5;
+    }
+
+    body.dark-mode .modal-attribute button:hover,
+    body.dark-mode .modal-buttons ha-button:hover {
+        background-color: #555;
+    }
+    .modal-buttons ha-button,
+    .modal-attribute button {
+        background-color: var(--primary-background-color, #f0f0f0);
+        color: var(--primary-text-color, #111);
+    }
+</style>
+`;
     }
 }
 
