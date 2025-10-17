@@ -113,3 +113,4 @@ This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for full license text.
 
 © 2025 [@xplanes](https://github.com/xplanes)
+@ 2025 [@zwiras](https://github.com/zwiras)
