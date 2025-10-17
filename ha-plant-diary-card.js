@@ -178,33 +178,33 @@ class PlantDiaryCard extends HTMLElement {
 
             // Update attributes
             this.modalEditPlantBody.querySelector('#last_watered_btn')
-                .addEventListener('click', () => {
+                .addEventListener('click', (e) => {
                     this._fireEvent('haptic', 'light');
                     this.modalEditPlantBody.querySelector('#last_watered').value = this.getTodayDate();
                     this.modalEditPlantBody.querySelector('#watering_postponed').value = 0;
                 });
             this.modalEditPlantBody.querySelector('#last_fertilized_btn')
-                .addEventListener('click', () => {
+                .addEventListener('click', (e) => {
                     this._fireEvent('haptic', 'light');
                     this.modalEditPlantBody.querySelector('#last_fertilized').value = this.getTodayDate();
                 });
             this.modalEditPlantBody.querySelector('#watering_postponed_inc_btn')
-                .addEventListener('click', () => {
+                .addEventListener('click', (e) => {
                     this._fireEvent('haptic', 'light');
                     this.modalEditPlantBody.querySelector('#watering_postponed').value = parseInt(this.modalEditPlantBody.querySelector('#watering_postponed').value) + 1;
                 });
             this.modalEditPlantBody.querySelector('#watering_postponed_dec_btn')
-                .addEventListener('click', () => {
+                .addEventListener('click', (e) => {
                     this._fireEvent('haptic', 'light');
                     this.modalEditPlantBody.querySelector('#watering_postponed').value = parseInt(this.modalEditPlantBody.querySelector('#watering_postponed').value) - 1;
                 });
             this.modalEditPlantBody.querySelector('#watering_days_inc_btn')
-                .addEventListener('click', () => {
+                .addEventListener('click', (e) => {
                     this._fireEvent('haptic', 'light');
                     this.modalEditPlantBody.querySelector('#watering_days').value = parseInt(this.modalEditPlantBody.querySelector('#watering_days').value) + 1;
                 });
             this.modalEditPlantBody.querySelector('#watering_days_dec_btn')
-                .addEventListener('click', () => {
+                .addEventListener('click', (e) => {
                     this._fireEvent('haptic', 'light');
                     this.modalEditPlantBody.querySelector('#watering_days').value = parseInt(this.modalEditPlantBody.querySelector('#watering_days').value) - 1;
                 });
@@ -529,8 +529,10 @@ class PlantDiaryCard extends HTMLElement {
         display: grid;
         grid-template-areas:
             "i n delete_btn"
-            "i last_fertilized last_watered"
-            "i watering_postponed due"
+            "i last_watered last_watered"
+            "i last_fertilized last_fertilized"
+            "i due due"
+            "i watering_postponed watering_postponed"
             "i . .";
         grid-template-columns: 100px 1fr auto;
         border-radius: 12px;
@@ -603,6 +605,7 @@ class PlantDiaryCard extends HTMLElement {
     }
 
     /* Modal overlay */
+    
     .modal {
         display: none;
         position: fixed;
@@ -673,32 +676,69 @@ class PlantDiaryCard extends HTMLElement {
         object-fit: cover;
         border-radius: 12px;
     }
+    
+    .modal-content {
+        width: 90%;
+        max-width: 400px;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
 
     .modal-attribute {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 8px;
         margin: 5px 0;
+        width: 100%;
+        box-sizing: border-box;
+        flex-wrap: nowrap;
     }
-
+    
+    /* Label */
     .modal-attribute label {
-        width: 120px;
+        min-width: 120px;
+        max-width: 120px;
         font-weight: 500;
-        margin-right: 8px;
+        white-space: normal;
+        word-break: break-word;
+        text-align: left;
+        color: var(--primary-text-color);
     }
-
+    
+    /* Input / Select / Switch */
     .modal-attribute input,
-    .modal-attribute select {
-        flex: 1;
+    .modal-attribute select  {
+        flex: 1 1 auto;
+        min-width: 60px;
+        max-width: 100%;
         padding: 6px 10px;
         border-radius: 6px;
         border: 1px solid var(--divider-color, #ccc);
         font-size: 0.9rem;
-        background-color: var(--secondary-background-color, #fff);
+        background-color: var(--secondary-background-color, rgba(255,255,255,0.05));
         color: var(--primary-text-color, #111);
+        box-sizing: border-box;
     }
-
+    
+    .modal-attribute ha-switch {
+        flex: 1 1 auto;
+        min-width: 60px;
+        max-width: 100%;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: none;
+        font-size: 0.9rem;
+        background-color: transparent;
+        color: var(--primary-text-color, #111);
+        box-sizing: border-box;
+    }
+    
     .modal-attribute button {
+        flex: 0 0 auto;
         background-color: #e8e8e8;
         border: none;
         border-radius: 6px;
@@ -706,9 +746,29 @@ class PlantDiaryCard extends HTMLElement {
         cursor: pointer;
         transition: all 0.2s ease;
     }
-    .modal-attribute button:hover {
-        background-color: var(--secondary-background-color, #fff);
-        transform: translateY(-1px);
+    
+    @media (hover: hover) {
+        .modal-attribute button:hover {
+            background-color: var(--secondary-background-color, #fff);
+            transform: translateY(-1px);
+        }
+    }
+    
+    @media (max-width: 360px) {
+        .modal-attribute {
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+    
+        .modal-attribute label {
+            width: 100%;
+        }
+    
+        .modal-attribute input,
+        .modal-attribute select,
+        .modal-attribute ha-switch {
+            width: 100%;
+        }
     }
 
     /* Button OK / Cancel / Delete */
@@ -718,6 +778,7 @@ class PlantDiaryCard extends HTMLElement {
         align-items: center;
         gap: 1px;
     }
+    
     .modal-buttons ha-button {
         min-width: 100px; 
         border: none;          
@@ -735,13 +796,13 @@ class PlantDiaryCard extends HTMLElement {
         transform: translateY(-1px);
     }
 
-
     /* Delete icon */
     .deletePlantButton {
         cursor: pointer;
         color: rgba(255, 50, 50, 0.7);
         transition: transform 0.2s ease, color 0.2s ease;
     }
+    
     .deletePlantButton:hover {
         color: red;
         transform: scale(1.2);
